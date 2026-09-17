@@ -1,0 +1,60 @@
+# SSL 证书模板（ssls）—— 复制到站点目录 ssl.yaml 或 global/ssls/ 下
+# 用法：
+#   - 站点独有证书  → configs/sites/<site-code>/ssl.yaml
+#   - 通配证书      → configs/global/ssls/wildcard.yaml
+#   - 多站共用多SAN → configs/global/ssls/shared-<名称>.yaml（一张证书只定义一次）
+# 关键：证书 ID = sha1(snis 逗号连接)。轮换时【保持 snis 不变】，sync 才是原地更新、不中断 TLS。
+# 字段依据：docs/official/adc/schema.json、docs/official/apisix/admin-api.md(SSL)、certificate.md、terminology/secret.md
+
+# ─────────────────────────────────────────────────────────────
+# 方案 A：内联 PEM（默认，最简单；私钥会进 Git，仓库须私有）
+# ─────────────────────────────────────────────────────────────
+# ssls:
+#   - snis:                       # 绑定的域名（决定证书 ID）
+#       - www.example.com
+#       - m.example.com
+#     labels:
+#       site: example
+#       site_type: www
+#       env: prod
+#       owner: ops
+#     certificates:
+#       - certificate: |          # 注意：minLength 128，必须含 BEGIN/END 行
+#           -----BEGIN CERTIFICATE-----
+#           ...(fullchain，服务器证书 + 中间链)...
+#           -----END CERTIFICATE-----
+#         key: |                  # 注意：minLength 32，必须含 BEGIN/END 行
+#           -----BEGIN PRIVATE KEY-----
+#           ...(私钥)...
+#           -----END PRIVATE KEY-----
+#     ssl_protocols:
+#       - TLSv1.2
+#       - TLSv1.3
+
+# ─────────────────────────────────────────────────────────────
+# 方案 B：环境变量引用（私钥不入库；数据面解析 $env://）
+# ─────────────────────────────────────────────────────────────
+# ssls:
+#   - snis:
+#       - www.example.com
+#     certificates:
+#       - certificate: "$env://SSL_CERT"   # 网关节点需设置环境变量 SSL_CERT / SSL_KEY
+#         key: "$env://SSL_KEY"
+#     ssl_protocols:
+#       - TLSv1.2
+#       - TLSv1.3
+
+# ─────────────────────────────────────────────────────────────
+# 方案 C：Secret 管理器引用（$secret://$manager/$id/$secret_name/$key）
+#    需先在网关配置 Secret 资源（Vault / AWS SM / GCP SM），见
+#    docs/official/apisix/terminology/secret.md
+# ─────────────────────────────────────────────────────────────
+# ssls:
+#   - snis:
+#       - www.example.com
+#     certificates:
+#       - certificate: "$secret://vault/1/example/cert"
+#         key: "$secret://vault/1/example/key"
+#     ssl_protocols:
+#       - TLSv1.2
+#       - TLSv1.3

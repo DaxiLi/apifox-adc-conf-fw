@@ -1,0 +1,58 @@
+# ============================================================
+# 站点类型模板：www（官网）—— 全域名匹配、方法全开、可 WebSocket、基础限流
+# 用法：复制到 configs/sites/<site-code>/service.yaml
+#   - 替换 <...> 占位符；补全 labels（owner/contact 必填，人找得到负责人）
+#   - 字段顺序规范：name → description → labels → upstream → routes
+#   - 上线前必须 lint + diff；见 docs/AI配置编写指引.md
+# ============================================================
+services:
+  - name: <site-code>-www
+    description: <站点中文名>官网
+    labels:
+      site: <site-code>
+      site_type: www
+      env: prod
+      owner: <team>
+    upstream:
+      type: roundrobin
+      scheme: http
+      pass_host: pass
+      nodes:
+        - host: <后端IP或内网域名>
+          port: 80
+          weight: 100
+      checks:
+        active:
+          type: http
+          http_path: /healthz
+          timeout: 5
+          healthy:
+            interval: 5
+            successes: 2
+          unhealthy:
+            interval: 2
+            http_failures: 3
+    routes:
+      - name: <site-code>-www-root
+        uris:
+          - /*
+        hosts:
+          - www.<主域名>
+          - m.<主域名>
+        methods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - PATCH
+          - HEAD
+          - OPTIONS
+        enable_websocket: true
+        priority: 0
+        plugins:
+          limit-count:
+            count: 100
+            time_window: 60
+            rejected_code: 429
+            key_type: var
+            key: remote_addr

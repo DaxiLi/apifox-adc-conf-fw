@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Unix 入口：等价于 Windows 的 adc.cmd
+# 依赖：.bin/adc/adc（先用 scripts/install-adc.sh 安装）
+exec "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/.bin/adc/adc" "$@"

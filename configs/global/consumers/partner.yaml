@@ -1,0 +1,4 @@
+# 公共消费者：外部合作伙伴调用方
+# username 全局唯一；凭证类型见 docs/official/adc/configuration.md
+# 新增时把 username 追加到下方列表（格式同 internal.yaml）
+consumers: []

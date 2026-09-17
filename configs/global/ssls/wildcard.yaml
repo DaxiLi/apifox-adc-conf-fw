@@ -1,0 +1,20 @@
+# 跨站通配证书（*.example.com）
+# 站点专属证书放各站点目录 ssl.yaml；此处放跨站通配证书。
+# 字段说明：docs/official/apisix/certificate.md、docs/official/apisix/admin-api.md（SSL 段）
+# 示例：
+#   ssls:
+#     - snis:
+#         - "*.example.com"
+#       certificates:
+#         - certificate: |
+#             -----BEGIN CERTIFICATE-----
+#             ...
+#             -----END CERTIFICATE-----
+#           key: |
+#             -----BEGIN PRIVATE KEY-----
+#             ...
+#             -----END PRIVATE KEY-----
+#       ssl_protocols:
+#         - TLSv1.2
+#         - TLSv1.3
+ssls: []

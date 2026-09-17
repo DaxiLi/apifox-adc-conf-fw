@@ -1,0 +1,20 @@
+# Ignore local tools (adc portable install)
+.bin/
+
+# Environment secrets
+.env
+
+# OS files
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Generated ADC diff output
+diff.yaml

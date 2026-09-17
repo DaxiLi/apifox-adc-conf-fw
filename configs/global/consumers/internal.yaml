@@ -1,0 +1,13 @@
+# 公共消费者：内部系统间调用方
+# username 全局唯一；凭证类型见 docs/official/adc/configuration.md（key-auth/basic-auth/jwt-auth/hmac-auth）
+# 新增时把 username 追加到下方列表，例如：
+#   consumers:
+#     - username: internal-scm
+#       labels:
+#         owner: team-ops
+#       credentials:
+#         - name: primary-key
+#           type: key-auth
+#           config:
+#             key: <密钥>
+consumers: []

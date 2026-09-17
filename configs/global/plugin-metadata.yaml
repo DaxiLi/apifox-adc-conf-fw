@@ -1,0 +1,8 @@
+# 插件元数据（plugin_metadata）：给插件提供全局参数，改动影响全网关，需变更评审
+# 键 = 插件名，值 = 元数据。当前无插件元数据。
+# 示例（kafka-logger 自定义日志格式）：
+#   kafka-logger:
+#     log_format:
+#       host: "$host"
+#       remote_addr: "$remote_addr"
+plugin_metadata: {}

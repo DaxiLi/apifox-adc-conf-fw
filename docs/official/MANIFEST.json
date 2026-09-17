@@ -1,0 +1,357 @@
+{
+  "description": "Local mirror of official Apache APISIX + ADC documentation.",
+  "sources": {
+    "adc": "https://github.com/api7/adc (main)",
+    "apisix-3.18": "https://github.com/apache/apisix (release/3.18, docs/en/latest)"
+  },
+  "files": [
+    {
+      "url": "https://raw.githubusercontent.com/api7/adc/main/README.md",
+      "local": "adc/README.md",
+      "size": 3095,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/api7/adc/main/docs/README.md",
+      "local": "adc/docs-README.md",
+      "size": 1672,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/api7/adc/main/docs/reference/configuration.md",
+      "local": "adc/configuration.md",
+      "size": 11474,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/api7/adc/main/docs/reference/cli.md",
+      "local": "adc/cli.md",
+      "size": 13910,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/api7/adc/main/docs/reference/openapi-converter.md",
+      "local": "adc/openapi-converter.md",
+      "size": 9986,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/api7/adc/main/docs/guides/workflow.md",
+      "local": "adc/workflow.md",
+      "size": 5488,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/api7/adc/main/docs/guides/resource-ids.md",
+      "local": "adc/resource-ids.md",
+      "size": 3290,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/api7/adc/main/docs/guides/label-selector.md",
+      "local": "adc/label-selector.md",
+      "size": 4253,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/api7/adc/main/libs/backend-apisix/README.md",
+      "local": "adc/backend-apisix.md",
+      "size": 3919,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/api7/adc/main/schema.json",
+      "local": "adc/schema.json",
+      "size": 53073,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/admin-api.md",
+      "local": "apisix/admin-api.md",
+      "size": 108026,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/getting-started/README.md",
+      "local": "apisix/getting-started.md",
+      "size": 5863,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/getting-started/configure-routes.md",
+      "local": "apisix/configure-routes.md",
+      "size": 2430,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/getting-started/load-balancing.md",
+      "local": "apisix/load-balancing.md",
+      "size": 2978,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/getting-started/key-authentication.md",
+      "local": "apisix/key-authentication.md",
+      "size": 5753,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/getting-started/rate-limiting.md",
+      "local": "apisix/rate-limiting.md",
+      "size": 3582,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/deployment-modes.md",
+      "local": "apisix/deployment-modes.md",
+      "size": 27826,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/profile.md",
+      "local": "apisix/profile.md",
+      "size": 5159,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/customize-nginx-configuration.md",
+      "local": "apisix/customize-nginx-configuration.md",
+      "size": 2360,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/certificate.md",
+      "local": "apisix/certificate.md",
+      "size": 14980,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/apisix-variable.md",
+      "local": "apisix/apisix-variable.md",
+      "size": 3826,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/FAQ.md",
+      "local": "apisix/FAQ.md",
+      "size": 28532,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/terminology/api-gateway.md",
+      "local": "apisix/terminology/api-gateway.md",
+      "size": 2415,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/terminology/consumer.md",
+      "local": "apisix/terminology/consumer.md",
+      "size": 6257,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/terminology/consumer-group.md",
+      "local": "apisix/terminology/consumer-group.md",
+      "size": 3427,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/terminology/credential.md",
+      "local": "apisix/terminology/credential.md",
+      "size": 4919,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/terminology/global-rule.md",
+      "local": "apisix/terminology/global-rule.md",
+      "size": 2401,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/terminology/plugin.md",
+      "local": "apisix/terminology/plugin.md",
+      "size": 12761,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/terminology/plugin-config.md",
+      "local": "apisix/terminology/plugin-config.md",
+      "size": 4479,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/terminology/plugin-metadata.md",
+      "local": "apisix/terminology/plugin-metadata.md",
+      "size": 3421,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/terminology/route.md",
+      "local": "apisix/terminology/route.md",
+      "size": 3135,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/terminology/router.md",
+      "local": "apisix/terminology/router.md",
+      "size": 2908,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/terminology/script.md",
+      "local": "apisix/terminology/script.md",
+      "size": 1611,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/terminology/secret.md",
+      "local": "apisix/terminology/secret.md",
+      "size": 18692,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/terminology/service.md",
+      "local": "apisix/terminology/service.md",
+      "size": 3626,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/terminology/upstream.md",
+      "local": "apisix/terminology/upstream.md",
+      "size": 6484,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/plugins/ai-proxy.md",
+      "local": "apisix/plugins/ai-proxy.md",
+      "size": 68271,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/plugins/basic-auth.md",
+      "local": "apisix/plugins/basic-auth.md",
+      "size": 31989,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/plugins/consumer-restriction.md",
+      "local": "apisix/plugins/consumer-restriction.md",
+      "size": 21164,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/plugins/cors.md",
+      "local": "apisix/plugins/cors.md",
+      "size": 21417,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/plugins/gzip.md",
+      "local": "apisix/plugins/gzip.md",
+      "size": 5313,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/plugins/hmac-auth.md",
+      "local": "apisix/plugins/hmac-auth.md",
+      "size": 49599,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/plugins/http-logger.md",
+      "local": "apisix/plugins/http-logger.md",
+      "size": 15134,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/plugins/ip-restriction.md",
+      "local": "apisix/plugins/ip-restriction.md",
+      "size": 11266,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/plugins/jwt-auth.md",
+      "local": "apisix/plugins/jwt-auth.md",
+      "size": 51709,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/plugins/key-auth.md",
+      "local": "apisix/plugins/key-auth.md",
+      "size": 36153,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/plugins/limit-conn.md",
+      "local": "apisix/plugins/limit-conn.md",
+      "size": 42328,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/plugins/limit-count.md",
+      "local": "apisix/plugins/limit-count.md",
+      "size": 60936,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/plugins/limit-req.md",
+      "local": "apisix/plugins/limit-req.md",
+      "size": 25046,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/plugins/log-rotate.md",
+      "local": "apisix/plugins/log-rotate.md",
+      "size": 5473,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/plugins/prometheus.md",
+      "local": "apisix/plugins/prometheus.md",
+      "size": 48824,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/plugins/proxy-cache.md",
+      "local": "apisix/plugins/proxy-cache.md",
+      "size": 31027,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/plugins/proxy-rewrite.md",
+      "local": "apisix/plugins/proxy-rewrite.md",
+      "size": 21448,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/plugins/response-rewrite.md",
+      "local": "apisix/plugins/response-rewrite.md",
+      "size": 14005,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/plugins/server-info.md",
+      "local": "apisix/plugins/server-info.md",
+      "size": 4136,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/docs/en/latest/plugins/traffic-split.md",
+      "local": "apisix/plugins/traffic-split.md",
+      "size": 53804,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/conf/config.yaml",
+      "local": "apisix/conf/config.yaml",
+      "size": 2299,
+      "status": "ok"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apache/apisix/release/3.18/conf/config.yaml.example",
+      "local": "apisix/conf/config.yaml.example",
+      "size": 48781,
+      "status": "ok"
+    }
+  ]
+}
