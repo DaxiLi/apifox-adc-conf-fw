@@ -27,8 +27,8 @@
 
 ## 标准流程
 
-写/改 YAML → `.\scripts\lint.ps1`（必须 0 错）→ `.\scripts\validate.ps1` → `.\scripts\diff.ps1`
-（diff 必须只含预期 create/update；出现无关 delete 立即停下）→ 人工 `.\scripts\sync.ps1`
+写/改 YAML → `.\scripts\lint.ps1`（必须 0 错；Linux/macOS 用 `./scripts/lint.sh`，有 pwsh 则 ps1 通用）→ `.\scripts\validate.ps1`（或 `./scripts/validate.sh`）→ `.\scripts\diff.ps1`（或 `./scripts/diff.sh`）
+（diff 必须只含预期 create/update；出现无关 delete 立即停下）→ 人工 `.\scripts\sync.ps1`（或 `./scripts/sync.sh`）
 
 ## 可读性/可维护性（文件最终是人读、人审、人改）
 

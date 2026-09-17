@@ -16,11 +16,13 @@
 cp .env.example .env
 
 # ③ 校验 → 差异 → （人工确认后）同步
-#    Windows / pwsh:  .\scripts\lint.ps1  →  .\scripts\diff.ps1  →  .\scripts\sync.ps1
-#    bash 直接调 adc：见下
+#    Windows:            .\scripts\lint.ps1 → .\scripts\diff.ps1 → .\scripts\sync.ps1
+#    Linux/macOS (bash): ./scripts/lint.sh  → ./scripts/diff.sh  → ./scripts/sync.sh
+#    （.ps1 需 pwsh，三平台通用；.sh 需 bash）
 ```
 
 网关入口：Windows 用 `adc.cmd`，Linux/macOS 用 `./adc`（等价，都指向 `.bin/adc/` 下的二进制）。
+安装工具：Windows `.\scripts\install-adc.ps1`；Linux/macOS `./scripts/install-adc.sh`。
 
 ## 目录结构
 
@@ -30,7 +32,7 @@ configs/
 ├── global/         # 全局规则 / 插件元数据 / 公共消费者 / 通配证书
 └── sites/<code>/   # 每站一个目录：service.yaml（+ ssl.yaml / consumers.yaml / README.md）
 docs/               # 设计、AI 指引、轮换手册、官方文档本地镜像、审视报告
-scripts/            # lint / validate / diff / sync / install-adc（跨平台）
+scripts/            # lint / validate / diff / sync（.ps1 通用 + .sh 原生）/ install-adc（跨平台）
 ```
 
 ## 文档导航
