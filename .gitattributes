@@ -1,0 +1,14 @@
+# 跨平台换行统一
+# shell 脚本强制 LF：避免在 Windows 克隆后被 autocrlf 转成 CRLF，导致 Linux/macOS 执行失败
+*.sh text eol=lf
+adc text eol=lf
+
+# PowerShell 脚本统一 CRLF（Windows 原生）；pwsh 亦兼容
+*.ps1 text eol=crlf
+*.cmd text eol=crlf
+
+# 配置/文档保持 LF（YAML 与 md 无平台差异）
+*.yaml text eol=lf
+*.yml text eol=lf
+*.md text eol=lf
+*.json text eol=lf
