@@ -41,8 +41,10 @@ Copy-Item configs\_templates\api.yaml configs\sites\<site-code>\service.yaml
 ## 安全红线（违反会误删网关配置）
 
 1. **sync 永远全量**（`configs/global/**` + `configs/sites/**`）。
-   **严禁 `configs/**/*.yaml`**——模板目录 `configs/_templates/` 必须在作用域外。
+   **严禁 `configs/**/*.yaml`**——模板目录 `configs/_templates/` 必须在作用域外（脚本已有守卫拦截）。
 2. **禁手工改 Admin API / Dashboard**——下次 sync 会被抹掉；一切变更走 YAML。
+   ⚠️ **空资源 = 所有权声明**：`global/` 下的 `consumers: []` / `ssls: []` / `global_rules: {}`
+   表示"仓库独占这些资源类型"——任何通过 Dashboard/Admin API 手工创建的同类型资源，下次 sync 会被删除。
 3. **不要随意改资源名**（ADC 按名字生成 ID，改名 = 删旧建新）；确需改名先 `adc dump --with-id`。
 4. **`global_rules` / `plugin_metadata` 改动 = 影响全网关**，需变更评审。
 5. 上线前必须 `diff`，看到**无关的 delete 一律停下排查**。

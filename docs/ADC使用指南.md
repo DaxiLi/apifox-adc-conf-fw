@@ -57,7 +57,7 @@ api-cluster/
 .\adc.cmd --help           # 查看帮助
 ```
 
-> 注意：仓库里可能拉了官方 node_modules 等开发依赖（并非运行必需），日常使用只需要 `adc.cmd` + `.bin/adc/adc.exe`。
+> 注意：ADC 二进制在 `.bin/adc/`（已 gitignore，不入库）；新环境用 `scripts/install-adc.ps1`（或 `install-adc.sh`）自举安装，日常使用 `adc.cmd`（Windows）/ `./adc`（Linux/macOS）即可。
 
 ### 2.3 升级 ADC
 
@@ -612,7 +612,10 @@ ADC 是全量对齐模型，建议：所有配置都只通过 YAML + `sync` 管�
 
 - ADC 官方仓库：https://github.com/api7/adc
 - ADC 发布页（下载/升级）：https://github.com/api7/adc/releases
-- Command Reference（命令大全）：https://docs.api7.ai/enterprise/reference/adc
-- Configuration Reference（配置格式官方文档）：https://docs.api7.ai/enterprise/reference/configuration-adc
+- **ADC Command Reference（当前维护版，GitHub）**：https://github.com/api7/adc/blob/main/docs/reference/cli.md
+- **ADC Configuration Reference（当前维护版，GitHub）**：https://github.com/api7/adc/blob/main/docs/reference/configuration.md
+- Command Reference（归档版，3.9.x）：https://docs.api7.ai/enterprise/reference/adc
+- Configuration Reference（归档版，3.9.x）：https://docs.api7.ai/enterprise/reference/configuration-adc
 - APISIX 插件总览（Plugin Hub）：https://apisix.apache.org/plugins/
 - 官方文档收集汇总（含写法与用法）：[docs/官方文档资料库.md](./官方文档资料库.md)
+- AI 写配置须知：[AGENTS.md](../AGENTS.md) ｜ 完整指引：[docs/AI配置编写指引.md](./AI配置编写指引.md)

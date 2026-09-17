@@ -10,6 +10,12 @@ $files = @(
 )
 $adcArgs = @()
 foreach ($f in $files) { $adcArgs += '-f'; $adcArgs += $f }
+# 守卫：只允许 configs/global/** 与 configs/sites/**（防误纳 _templates / 全量 glob）
+foreach ($f in $files) {
+    if ($f -notmatch '^configs[\\/](global|sites)[\\/]') {
+        Write-Error "禁止的配置文件 glob: $f（只允许 configs/global/** 与 configs/sites/**）"; exit 2
+    }
+}
 $adc = if ($env:OS -eq 'Windows_NT') { '.\adc.cmd' } else { './adc' }   # 跨平台入口
 if (-not $SkipLint) { & $adc lint @adcArgs; if ($LASTEXITCODE -ne 0) { Write-Host 'lint 失败，已中止 sync' -ForegroundColor Red; exit 1 } }
 & $adc diff @adcArgs --timeout 60s

@@ -20,6 +20,17 @@ done
 
 FILES=(-f "configs/global/**/*.yaml" -f "configs/sites/**/*.yaml")
 
+# 守卫：只允许 configs/global/** 与 configs/sites/**（防误纳 _templates / 全量 glob）
+for f in "${FILES[@]}"; do
+  case "$f" in
+    -f|--*) continue ;;
+  esac
+  case "${f#configs/}" in
+    global/*|sites/*) ;;
+    *) echo "禁止的配置文件 glob: $f（只允许 configs/global/** 与 configs/sites/**）" >&2; exit 2 ;;
+  esac
+done
+
 if [ "$SKIP_LINT" != "1" ]; then
   "$ROOT/adc" lint "${FILES[@]}"
 fi

@@ -1,0 +1,50 @@
+# ADC 配置检查（GitOps 门禁）
+# 原则：自动化把关"写得好不好"，sync 永远由人工执行，绝不在 CI 里自动跑。
+#
+# 使用前：
+#   1. 在仓库 Settings → Secrets and variables → Actions 配置：
+#        ADC_SERVER  网关 Admin API 地址（如 http://172.32.100.200:19180）
+#        ADC_TOKEN   Admin API 密钥
+#   2. 若网关不在公网/CI 可达的网络，validate/diff 步骤会自动跳过（lint 仍必跑）。
+#   3. 如 CI 运行在自托管 runner（能直连网关），validate/diff 会自动启用。
+
+name: ADC 配置检查
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 安装 ADC（工具自举）
+        run: ./scripts/install-adc.sh
+
+      - name: 注入网关连接（来自 GitHub Secrets）
+        run: |
+          echo "ADC_BACKEND=apisix" >> "$GITHUB_ENV"
+          if [ -n "${{ secrets.ADC_SERVER }}" ]; then
+            echo "ADC_SERVER=${{ secrets.ADC_SERVER }}" >> "$GITHUB_ENV"
+            echo "ADC_TOKEN=${{ secrets.ADC_TOKEN }}" >> "$GITHUB_ENV"
+          fi
+
+      - name: lint（本地 schema 校验，必过）
+        run: ./scripts/lint.sh
+
+      - name: validate（后端校验；需网关可达）
+        if: env.ADC_SERVER != ''
+        run: ./scripts/validate.sh
+
+      - name: diff（对照网关；出现 delete 即失败，必须人工确认）
+        if: env.ADC_SERVER != ''
+        run: |
+          ./scripts/diff.sh
+          if grep -qE '^  type: delete' diff.yaml; then
+            echo "::error::diff 中出现 delete 操作！同步前必须人工确认，详见 diff.yaml"
+            exit 1
+          fi
+          echo "diff 无 delete，通过 ✓"

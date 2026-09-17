@@ -48,10 +48,11 @@ scripts/            # lint / validate / diff / sync（.ps1 通用 + .sh 原生�
 
 ## 红线（违反会报错或误删网关）
 
-1. 路径用**正斜杠**；严禁 `configs/**/*.yaml`（会吞模板）。
+1. 路径用**正斜杠**；严禁 `configs/**/*.yaml`（会吞模板；脚本已有守卫拦截）。
 2. **不改资源名**（ID = sha1(name)，改名 = 删旧建新）；轮换证书保持 `snis` 不变。
 3. **sync 永远全量 + 人工确认**；`diff` 出现无关 delete 立即停下。
 4. 不手动改 Admin API / Dashboard；一切变更走 YAML。
-5. `.env` 含 Token，永不提交。
+   ⚠️ `global/` 下的**空资源文件 = 所有权声明**：手工创建的消费者/证书/全局规则会被下次 sync 删除。
+5. `.env` 含 Token，永不提交；网关基线备份在 `backups/`（gitignore，可能含密钥）。
 
 完整规范见 `docs/AI配置编写指引.md` 与 `docs/配置仓库结构设计.md`。
