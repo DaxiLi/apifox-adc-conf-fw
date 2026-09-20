@@ -6,7 +6,7 @@
 | 后端 | `wss://rtasr.xfyun.cn/v1/ws`（`rtasr.xfyun.cn:443`，上游 scheme `https`） |
 | 站点类型 | ws（WebSocket / 长连接） |
 | 负责人 | 邓儇 |
-| IP 白名单 | `10.106.150.107`（ip-restriction，route 级） |
+| IP 白名单 | 30 个客户端 IP（ip-restriction，route 级，详见 service.yaml） |
 
 ## 真实 IP 链路（已确认配置）
 
@@ -34,3 +34,4 @@ HAProxy 后端指向该端口（已确认）。
 | 2026-09-17 | 新增站点：service.yaml（ws 反代 + ip-restriction 白名单）+ ssl.yaml（内联通配证书）+ 本 README | 对外提供讯飞实时听写反代入口；证书文件 cert.pem/key.pem 内联后已删除 |
 | 2026-09-17 | 说明更新：确认 HAProxy PROXY protocol + APISIX proxy_protocol 端口均已配置 | 明确真实 IP 链路已就绪，白名单按真实客户端 IP 匹配 |
 | 2026-09-17 | 证书调整：本站 ssl.yaml 删除，通配证书移入 global/ssls/wildcard.yaml（snis: *.ynfwyy.com） | 证书为 *.ynfwyy.com 通配，按仓库设计一张证书只定义一次，放全局供所有子域复用 |
+| 2026-09-20 | 白名单更新：替换为新的 30 个客户端 IP（原 10.105.27.0/24、10.106.150.107 移除） | 用户提供的最新放行 IP 清单 |
