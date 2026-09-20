@@ -1,0 +1,52 @@
+# ============================================================
+# 站点：rtasr-xfyun-cn.ynfwyy.com（讯飞实时语音听写反向代理）
+# 类型：ws（WebSocket / 长连接）
+# 负责人：邓儇
+# 后端：wss://rtasr.xfyun.cn/v1/ws（端口 443，上游 scheme 用 https）
+# 说明：APISIX 前置是 HAProxy（PROXY protocol）。网关监听端口必须开启
+#       proxy_protocol（config.yaml 的 apisix.proxy_protocol.*），
+#       否则客户端 IP 拿不到真实值，ip-restriction 白名单会按 HAProxy 匹配。
+# ============================================================
+services:
+  - name: rtasr-xfyun-cn.ynfwyy.com-ws
+    description: 讯飞实时语音听写 WebSocket 反代
+    labels:
+      site: rtasr-xfyun-cn.ynfwyy.com
+      site_type: ws
+      env: prod
+      owner: 邓儇
+      contact: 邓儇
+    upstream:
+      type: roundrobin
+      scheme: https
+      pass_host: pass
+      nodes:
+        - host: rtasr.xfyun.cn
+          port: 443
+          weight: 100
+      timeout:
+        connect: 10
+        send: 60
+        read: 3600          # 长连接读超时调大：ASR 会话可长时间保持
+    routes:
+      - name: rtasr-xfyun-cn.ynfwyy.com-ws-v1
+        uris:
+          - /v1/ws          # 客户端 wss://rtasr-xfyun-cn.ynfwyy.com/v1/ws?<参数>，查询串原样透传
+        hosts:
+          - rtasr-xfyun-cn.ynfwyy.com
+        methods: [GET]
+        enable_websocket: true
+        vars:
+          - - server_port
+            - "in"
+            - [9181, 9182]
+        priority: 0
+        plugins:
+          real-ip:
+            source: proxy_protocol_addr  # 指定从 PROXY protocol 地址变量获取真实 IP
+            trusted_addresses:
+              - 172.32.9.2
+          ip-restriction:
+            whitelist:      # 仅放行该客户端 IP（PROXY protocol 透传真实来源 IP）
+              - 10.105.27.0/24
+              - 10.106.150.107
