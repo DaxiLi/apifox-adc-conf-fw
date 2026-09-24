@@ -1,0 +1,44 @@
+# ============================================================
+# 站点：oms-ejinshui-cloud（数电发票管理系统反代，供 HRP 下载电子发票）
+# 网络区：extranet（外网）
+# 类型：partner（第三方厂家系统反代）
+# 负责人：陈曦
+# 后端：https://www.oms.ejinshui-cloud.com:443（数电发票管理系统）
+# 访问域名：www-oms-ejinshui--cloud-com.ynfwyy.com（对应 *.ynfwyy.com 通配证书，无需单独 ssl.yaml）
+# 说明：外网不走 PROXY protocol，请求直达 APISIX 标准 HTTP/HTTPS 监听口 80/443；
+#       IP 白名单 172.32.5.23（HRP 侧出口 IP，外网直连 remote_addr 即客户端 IP）。
+# ============================================================
+services:
+  - name: oms-ejinshui-cloud-partner
+    description: 数电发票管理系统反代（HRP 下载电子发票）
+    labels:
+      site: oms-ejinshui-cloud
+      zone: extranet          # 网络分区：外网
+      site_type: partner
+      env: prod
+      owner: 陈曦
+      contact: 陈曦
+    upstream:
+      type: roundrobin
+      scheme: https
+      pass_host: node         # 后端按虚拟主机路由，需透传 Host=www.oms.ejinshui-cloud.com（否则后端 vhost 匹配不上）
+      nodes:
+        - host: www.oms.ejinshui-cloud.com
+          port: 443
+          weight: 100
+    routes:
+      - name: oms-ejinshui-cloud-root
+        uris:
+          - /*
+        hosts:
+          - www-oms-ejinshui--cloud-com.ynfwyy.com
+        methods: [GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS]
+        vars:
+          - - server_port
+            - "in"
+            - ["80", "443"]     # APISIX 标准 HTTP/HTTPS 监听口（外网不走 PROXY；内网 9181/9182 入口不会命中）
+        priority: 0
+        plugins:
+          ip-restriction:
+            whitelist:
+              - 172.32.5.23    # 仅放行 HRP 侧出口 IP，其余来源 403
