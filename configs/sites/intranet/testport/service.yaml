@@ -1,0 +1,38 @@
+# ============================================================
+# 站点：testport（示例站点：按 PROXY protocol 目标端口匹配）
+# 网络区：intranet（内网）
+# 类型：www（示例）
+# 负责人：test（示例）
+# 后端：http://172.32.100.11:80
+# 说明：HAProxy 将 10001 端口的连接经 PROXY protocol 转发到 APISIX 9181/9182，
+#       本站以 PROXY 头里的原始目标端口（proxy_protocol_server_port == 10001）匹配。
+# ============================================================
+services:
+  - name: testport-www
+    description: 示例站点：按 PROXY protocol 目标端口 10001 匹配
+    labels:
+      site: testport
+      zone: intranet          # 网络分区：内网（示例站点）
+      site_type: www
+      env: prod
+      owner: test
+      contact: test
+      x-check-skip: "intranet-ip,intranet-realip"   # 豁免：示例站仅演示 PROXY 目标端口匹配，无真实 IP 白名单/real-ip（见 tools/README.md）
+    upstream:
+      type: roundrobin
+      scheme: http
+      pass_host: pass
+      nodes:
+        - host: 172.32.100.11
+          port: 80
+          weight: 100
+    routes:
+      - name: testport-www-root
+        uris:
+          - /*
+        methods: [GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS]
+        vars:
+          - - proxy_protocol_server_port
+            - "=="
+            - "10001"    # PROXY 头里的原始目标端口（客户端连 HAProxy 时用的端口）
+        priority: 0

@@ -1,7 +1,8 @@
 # ============================================================
 # 站点类型模板：admin（管理后台）—— IP 白名单 + basic-auth
-# 用法：复制到 configs/sites/<site-code>/service.yaml
-#   - 替换 <...> 占位符；补全 labels（owner/contact 必填）
+# 用法：复制到 configs/sites/<zone>/<site-code>/service.yaml
+#   - 替换 <...> 占位符；补全 labels（zone/owner/contact 必填）
+#   - zone 网络区安全块（PROXY/IP 限制）按网络区复制：intranet|extranet|public.yaml
 #   - 配套：管理员 consumer 写 sites/<code>/consumers.yaml
 #       （username: <site-code>-admin；credentials.type: basic-auth）
 # ============================================================
@@ -10,6 +11,7 @@ services:
     description: <站点名> 管理后台
     labels:
       site: <site-code>
+      zone: <zone>            # 网络分区：intranet/extranet/public（必填）
       site_type: admin
       env: prod
       owner: <team>

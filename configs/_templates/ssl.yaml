@@ -15,6 +15,7 @@
 #       - m.example.com
 #     labels:
 #       site: example
+#       zone: <zone>          # 网络分区：intranet/extranet/public；跨区共用标 shared
 #       site_type: www
 #       env: prod
 #       owner: ops

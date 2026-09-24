@@ -1,0 +1,43 @@
+# ============================================================
+# 站点：www.ynfwyy.com（外网站点：key-auth 认证反代）
+# 网络区：extranet（外网）
+# 类型：www（官网）
+# 负责人：test
+# 后端：http://172.32.100.11:80（由 testport 示例站点复制改造）
+# 说明：外网不走 PROXY protocol，请求直达 APISIX 标准 HTTP/HTTPS 监听口 80/443；
+#       路由按 server_port 匹配——内网走 PP 的 9181/9182 入口请求不会命中本路由。
+# 认证：key-auth，认证头 token，密钥 aaaabbbb（对应 consumer：ynfwyy-www）。
+# ============================================================
+services:
+  - name: ynfwyy-www
+    description: 外网 www.ynfwyy.com 反代（key-auth）
+    labels:
+      site: ynfwyy
+      zone: extranet          # 网络分区：外网
+      site_type: www
+      env: prod
+      owner: test
+      contact: test
+    upstream:
+      type: roundrobin
+      scheme: http
+      pass_host: pass
+      nodes:
+        - host: 172.32.100.11
+          port: 80
+          weight: 100
+    routes:
+      - name: ynfwyy-www-root
+        uris:
+          - /*
+        hosts:
+          - www.ynfwyy.com
+        methods: [GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS]
+        vars:
+          - - server_port
+            - "in"
+            - ["80", "443"]     # APISIX 标准 HTTP/HTTPS 监听口（外网不走 PROXY；内网 9181/9182 入口不会命中）
+        priority: 0
+        plugins:
+          key-auth:
+            header: token       # 认证头名：token（key-auth 默认 apikey，改成业务约定头名）

@@ -1,0 +1,51 @@
+# ============================================================
+# 网络区模板：extranet（外网）—— 对外合作 / 受限访问的站点
+# 规则：labels.zone 必须为 extranet，站点文件放 configs/sites/extranet/；
+#       不走 PROXY protocol（只有内网才走 PP，端口 9181/9182）；
+#       IP 限制【非必须】（可选；内网 zone 才强制）。
+# 端口：APISIX 标准 HTTP/HTTPS 监听口 80(HTTP)/443(HTTPS)，请求直达、不走 PROXY；
+#       路由用 vars: server_port in ["80","443"] 匹配，内网 9181/9182 入口不会命中（区隔离）。
+# 用法：复制到 configs/sites/extranet/<site-code>/service.yaml，替换 <...> 占位符。
+# 字段顺序规范：name → description → labels → upstream → routes
+# ============================================================
+services:
+  - name: <site-code>-<用途>
+    description: <站点中文名>
+    labels:
+      site: <site-code>
+      zone: extranet            # 网络分区：外网（必须）
+      site_type: <www/api/ws/static/admin/partner/internal>
+      env: prod
+      owner: <team>
+      contact: <负责人>
+    upstream:
+      type: roundrobin
+      scheme: http
+      pass_host: pass
+      nodes:
+        - host: <后端地址>
+          port: 80
+          weight: 100
+    routes:
+      - name: <site-code>-root
+        uris:
+          - /*
+        hosts:
+          - <外网域名>
+        methods: [GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS]
+        vars:
+          - - server_port
+            - "in"
+            - ["80", "443"]   # APISIX 标准 HTTP/HTTPS 监听口（外网不走 PROXY）
+        priority: 0
+        plugins:
+          # 可选：IP 限制（白名单/黑名单按需，外网不强制）
+          # ip-restriction:
+          #   whitelist:
+          #     - <放行 IP 或网段>
+          limit-count:           # 外网站点建议基础限流（可选）
+            count: 100
+            time_window: 60
+            rejected_code: 429
+            key_type: var
+            key: remote_addr     # 前置 LB 未开 PROXY 时 remote_addr 是 LB 出口 IP，按需调整

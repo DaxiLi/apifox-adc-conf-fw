@@ -19,5 +19,9 @@ Desktop.ini
 # Generated ADC diff output
 diff.yaml
 
+# Generated inventory artifacts (searchable dashboard / live dump temp)
+configs/sites/INVENTORY.html
+.inventory-live.yaml
+
 # Gateway baseline backups (may contain consumer credentials)
 backups/

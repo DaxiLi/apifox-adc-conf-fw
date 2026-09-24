@@ -1,0 +1,16 @@
+# 站点消费者：ynfwyy-www（外网 www.ynfwyy.com 的调用方）
+# 认证：key-auth；请求头 token: aaaabbbb（业务约定的调用方凭证）
+consumers:
+  - username: ynfwyy-www
+    labels:
+      site: ynfwyy
+      zone: extranet          # 网络分区：外网
+      site_type: www
+      env: prod
+      owner: test
+      contact: test
+    credentials:
+      - name: primary-key
+        type: key-auth
+        config:
+          key: aaaabbbb

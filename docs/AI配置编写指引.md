@@ -25,7 +25,7 @@ configs/**/*.yaml  ←— 唯一真相来源（GitOps）
 
 | 任务 | 必须拿到 | 缺了怎么办 |
 | ---- | ---- | ---- |
-| 新增站点 | 站点代码（主域名去 www）、域名列表、后端地址:端口、站点类型、负责团队 | **问用户**；不要用 `<占位>` 同步 |
+| 新增站点 | 站点代码（主域名去 www）、域名列表、后端地址:端口、站点类型、**网络分区 zone（intranet/extranet/public）**、负责团队 | **问用户**；不要用 `<占位>` 同步 |
 | 加插件 | 插件名、参数取值（阈值/路径/密钥策略） | 参数查官方插件文档；取值不明确就问 |
 | 换证书 | 新证书 PEM（fullchain + key） | 让用户提供文件内容或 secret 引用 |
 | 加消费者 | username、凭证类型、密钥 | 问；密钥不要编造 |
@@ -54,8 +54,8 @@ configs/**/*.yaml  ←— 唯一真相来源（GitOps）
 
 | 资源 | 放哪 |
 | ---- | ---- |
-| service（含 routes/upstream） | `configs/sites/<site-code>/service.yaml` |
-| 站点证书 | `configs/sites/<site-code>/ssl.yaml` |
+| service（含 routes/upstream） | `configs/sites/<zone>/<site-code>/service.yaml`（zone = intranet/extranet/public） |
+| 站点证书 | `configs/sites/<zone>/<site-code>/ssl.yaml` |
 | 通配/多站共用证书 | `configs/global/ssls/`（一张证书只定义一次） |
 | 公共消费者 | `configs/global/consumers/`；站点专属 → 站点目录 |
 | global_rules / plugin_metadata | `configs/global/`（影响全网关，谨慎） |
@@ -73,15 +73,23 @@ configs/**/*.yaml  ←— 唯一真相来源（GitOps）
 
 > **改名 = 删旧建新**（ID = sha1(name)）。已上线的资源不要改名；确需改名先 `adc dump --with-id` 保住 ID。
 
-### 4.3 labels（每个 service/consumer/ssl 必填 4 个）
+### 4.3 labels（每个 service/consumer/ssl 必填 5 个）
 
 ```yaml
 labels:
   site: <site-code>
+  zone: intranet        # 网络分区（必填）：intranet/extranet/public，必须与目录一致
   site_type: www        # www/api/ws/static/admin/partner/internal
   env: prod
   owner: <team>
 ```
+
+> **网络分区（zone）决定安全姿态**：内网（`intranet/`）必须走 PROXY protocol（PP）
+> （`vars: server_port in ["9181","9182"]` + `real-ip` 插件）且必须带 `ip-restriction`
+> 白名单；外网/公网**不走 PP**（`vars: server_port in ["80","443"]`，请求直达标准监听口），
+> IP 限制可选/不要求。内网（9181/9182）与外网/公网（80/443）端口互不重叠 →
+> 内网请求命中不了外网/公网路由。模板：`_templates/intranet|extranet|public.yaml`；
+> 详见 `docs/配置仓库结构设计.md` §4.3。
 
 ### 4.4 ADC 特有字段差异（易错）
 
@@ -171,7 +179,7 @@ plugins:  键按字母序
 
 | 任务 | 怎么做 |
 | ---- | ---- |
-| 新增站点 | 复制 `configs/_templates/<类型>.yaml` → `configs/sites/<code>/service.yaml`，替换占位符、补全 labels → 流程见第 5 节 |
+| 新增站点 | 复制网络区模板 `configs/_templates/intranet|extranet|public.yaml` → `configs/sites/<zone>/<code>/service.yaml`（路由形态参考 www/api/ws/static/admin.yaml），替换占位符、补全 labels（zone 与目录一致）→ 流程见第 5 节 |
 | 给路由加插件 | 在对应 `routes[]` 的 `plugins:` 下加；参数查 `docs/official/apisix/plugins/` |
 | 全站加插件 | 加在 service 级 `plugins:` |
 | 改上游节点 | 改 `upstream.nodes` 数组（增删 host/port/weight） |
@@ -188,7 +196,7 @@ plugins:  键按字母序
 | 反斜杠路径 | adc（node glob）把 `\` 当转义符 → 崩溃；一律正斜杠 |
 | `managed-by: adc` 标签 | sync 时 ADC 自动注入到资源上，diff/dump 里出现是**正常现象**，不要删 |
 | `-f` 单值 | 一次 `-f` 只接受一个文件/glob；多文件重复 `-f`（脚本已封装） |
-| 测试站点 | `configs/sites/` 当前为空（测试站点已清空）；新站点从模板建 |
+| 测试站点 | `configs/sites/intranet/testport/` 是 PROXY 目标端口匹配示例；新站点从 zone 模板建 |
 | 版本 | ADC v0.30.3；`$env://`/`${ENV}`/`\${}` 分别要求 ≥ v0.12.1/v0.12.0/v0.19.1 |
 
 ---
@@ -198,7 +206,8 @@ plugins:  键按字母序
 - [ ] 路径全部正斜杠
 - [ ] 字段都能在 schema.json / 官方文档找到，无 `Unrecognized key`
 - [ ] `nodes` 是数组格式；用 `description` 不用 `desc`
-- [ ] labels 四个（site/site_type/env/owner）齐全
+- [ ] labels 五个（site/zone/site_type/env/owner）齐全，且 `zone` 与目录一致
+- [ ] 内网路由：`server_port in ["9181","9182"]` + `real-ip` + `ip-restriction` 白名单（不允许留空）
 - [ ] 命名规范（service/route/consumer 唯一性）符合
 - [ ] 未改资源名 / 未动 snis（除非任务是改名/加域名）
 - [ ] 模板目录 `_templates/` 未被修改

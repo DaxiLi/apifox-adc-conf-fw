@@ -8,7 +8,8 @@ ssls:
       - "*.ynfwyy.com"
     labels:
       site: ynfwyy
-      site_type: www       # 通配证书属主域名家族，非单一站点
+      zone: shared       # 跨区共用：内网站点（ss-admin/ss-dz/rtasr）与外网站点（www.ynfwyy.com）都用 *.ynfwyy.com
+      site_type: www     # 通配证书属主域名家族，非单一站点
       env: prod
       owner: 袁杰
       contact: 袁杰

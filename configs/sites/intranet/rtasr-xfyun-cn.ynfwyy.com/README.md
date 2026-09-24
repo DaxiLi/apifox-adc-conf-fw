@@ -4,6 +4,7 @@
 | ---- | ---- |
 | 访问域名 | `wss://rtasr-xfyun-cn.ynfwyy.com/v1/ws?<请求参数>` |
 | 后端 | `wss://rtasr.xfyun.cn/v1/ws`（`rtasr.xfyun.cn:443`，上游 scheme `https`） |
+| 网络区 | intranet（内网，`configs/sites/intranet/`） |
 | 站点类型 | ws（WebSocket / 长连接） |
 | 负责人 | 邓儇 |
 | IP 白名单 | 30 个客户端 IP（ip-restriction，route 级，详见 service.yaml） |
@@ -31,7 +32,9 @@ HAProxy 后端指向该端口（已确认）。
 
 | 日期 | 内容 | 原因 |
 | ---- | ---- | ---- |
+| 2026-09-21 | 重构：迁入 `configs/sites/intranet/`，service 加 `zone: intranet` 标签 | 配置按网络区分区（内网/外网/公网），内网必须 PROXY + IP 白名单；资源名不变，ID 不变 |
 | 2026-09-17 | 新增站点：service.yaml（ws 反代 + ip-restriction 白名单）+ ssl.yaml（内联通配证书）+ 本 README | 对外提供讯飞实时听写反代入口；证书文件 cert.pem/key.pem 内联后已删除 |
 | 2026-09-17 | 说明更新：确认 HAProxy PROXY protocol + APISIX proxy_protocol 端口均已配置 | 明确真实 IP 链路已就绪，白名单按真实客户端 IP 匹配 |
 | 2026-09-17 | 证书调整：本站 ssl.yaml 删除，通配证书移入 global/ssls/wildcard.yaml（snis: *.ynfwyy.com） | 证书为 *.ynfwyy.com 通配，按仓库设计一张证书只定义一次，放全局供所有子域复用 |
 | 2026-09-20 | 白名单更新：替换为新的 30 个客户端 IP（原 10.105.27.0/24、10.106.150.107 移除） | 用户提供的最新放行 IP 清单 |
+| 2026-09-20 | vars 修复：`server_port in [9181, 9182]` 数字列表改为字符串 `["9181", "9182"]` | `in` 是严格相等比较，数字不会等于 nginx 变量的字符串值，原写法可能永不匹配 |

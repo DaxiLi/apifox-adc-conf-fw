@@ -1,6 +1,8 @@
 # 全局规则（global_rules）：对所有请求生效，改动影响全网关，需变更评审
-# 键 = 插件名，值 = 插件配置。当前无全局规则（网关为空，首次接管）。
-# 启用示例：
-#   prometheus: {}          # 指标采集
-#   server-info: {}
-global_rules: {}
+# 键 = 插件名，值 = 插件配置。
+global_rules:
+  response-rewrite:
+    headers:
+      remove:
+        - Server   # 隐藏网关服务器标识与版本（APISIX 默认在 Server 响应头暴露版本号），
+                   # 防止向客户端暴露网关技术栈/版本信息（官方推荐，见 response-rewrite 文档/官方安全实践）

@@ -39,12 +39,13 @@ api-cluster/
 ├── docs/                            # 本文档 + 官方文档本地镜像（docs/official/）
 ├── scripts/                         # 常用命令封装（lint / validate / diff / sync）
 └── configs/                         # 配置唯一真相来源（结构见 docs/配置仓库结构设计.md）
-    ├── _templates/                  # 站点类型模板（脚手架，不在 sync 作用域内）
+    ├── _templates/                  # 站点模板（网络区 + 站点类型；不在 sync 作用域内）
     ├── global/                      # 全局规则 / 插件元数据 / 公共消费者 / 通配证书
-    └── sites/
-        └── ynfwyy/                  # 站点「官网服务」
-            ├── service.yaml         # 服务 + 路由 + 上游（迁移自旧 configs/routes/）
-            └── README.md            # 站点说明
+    └── sites/                       # 第一层 = 网络区（intranet/extranet/public）
+        └── intranet/                # 内网：PROXY + IP 白名单必开
+            └── ss-admin.ynfwyy.com/ # 站点「第三方厂家管理后台反代」
+                ├── service.yaml     # 服务 + 路由 + 上游
+                └── README.md        # 站点说明
 ```
 
 ### 2.2 怎么调用 ADC
@@ -131,8 +132,8 @@ adc
 ### 4.3 lint — 本地格式校验（不联网）
 
 ```powershell
-.\adc.cmd lint -f configs/sites/ynfwyy/service.yaml                    # 校验单个文件
-.\adc.cmd lint -f configs/global/**/*.yaml -f configs/sites/**/*.yaml   # 校验多个
+.\adc.cmd lint -f configs/sites/intranet/ss-admin.ynfwyy.com/service.yaml          # 校验单个文件
+.\adc.cmd lint -f configs/global/**/*.yaml -f configs/sites/**/*.yaml              # 校验多个
 ```
 
 - 优点：快、不需要后端在线
@@ -141,7 +142,7 @@ adc
 ### 4.4 validate — 后端校验（更严格）
 
 ```powershell
-.\adc.cmd validate -f configs/sites/ynfwyy/service.yaml --timeout 60s
+.\adc.cmd validate -f configs/sites/intranet/ss-admin.ynfwyy.com/service.yaml --timeout 60s
 ```
 
 相当于"假装同步一次"，让 APISIX 后端帮你检查，严格程度：**sync > validate > lint**。
@@ -149,7 +150,7 @@ adc
 ### 4.5 diff — 对比本地与后端
 
 ```powershell
-.\adc.cmd diff -f configs/sites/ynfwyy/service.yaml --timeout 60s
+.\adc.cmd diff -f configs/sites/intranet/ss-admin.ynfwyy.com/service.yaml --timeout 60s
 ```
 
 输出结果显示将要发生的 **创建 / 更新 / 删除**，同步前必看。
@@ -157,7 +158,7 @@ adc
 ### 4.6 sync — 同步（核心命令，谨慎使用）
 
 ```powershell
-.\adc.cmd sync -f configs/sites/ynfwyy/service.yaml --timeout 60s
+.\adc.cmd sync -f configs/sites/intranet/ss-admin.ynfwyy.com/service.yaml --timeout 60s
 ```
 
 **⚠️ sync 是"全量对齐"**：本地文件里没有的资源，网关里会被**删除**。所以：
@@ -206,7 +207,8 @@ ssls:               # TLS 证书
 
 一个 service 通常 = **路由(routes) + 上游(upstream)**。路由决定"请求匹配什么"，上游决定"转发给谁"。
 
-当前仓库 `configs/sites/ynfwyy/service.yaml` 就是一个完整例子：
+当前仓库 `configs/sites/intranet/ss-admin.ynfwyy.com/service.yaml` 就是一个完整例子
+（示意，字段与真实配置一致）：
 
 ```yaml
 services:

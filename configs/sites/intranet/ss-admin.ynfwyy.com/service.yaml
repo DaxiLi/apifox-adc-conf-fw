@@ -1,16 +1,18 @@
 # ============================================================
-# 站点：ss-dz.ynfwyy.com（第三方厂家服务反向代理）
+# 站点：ss-admin.ynfwyy.com（第三方厂家管理后台反向代理）
+# 网络区：intranet（内网）
 # 类型：partner（对外合作接口）
 # 负责人：窦坤-邢玉瑞
-# 后端：http://172.32.98.41:83
+# 后端：http://172.32.98.41:85
 # 说明：仅放行 10.106.150.107；限 9181(HTTP)/9182(HTTPS) PROXY protocol 端口。
 #       网关前置 HAProxy 走 PROXY protocol，real-ip 取真实客户端 IP 供白名单匹配。
 # ============================================================
 services:
-  - name: ss-dz.ynfwyy.com-partner
-    description: 第三方厂家服务反向代理
+  - name: ss-admin.ynfwyy.com-partner
+    description: 第三方厂家管理后台反向代理
     labels:
-      site: ss-dz.ynfwyy.com
+      site: ss-admin.ynfwyy.com
+      zone: intranet          # 网络分区：内网（仅内网可访问）
       site_type: partner
       env: prod
       owner: 窦坤-邢玉瑞
@@ -21,19 +23,19 @@ services:
       pass_host: pass
       nodes:
         - host: 172.32.98.41
-          port: 83
+          port: 85
           weight: 100
     routes:
-      - name: ss-dz.ynfwyy.com-root
+      - name: ss-admin.ynfwyy.com-root
         uris:
           - /*
         hosts:
-          - ss-dz.ynfwyy.com
+          - ss-admin.ynfwyy.com
         methods: [GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS]
         vars:
           - - server_port
             - "in"
-            - [9181, 9182]     # 仅监听 9181(HTTP)/9182(HTTPS) PROXY protocol 端口
+            - ["9181", "9182"]     # 仅监听 9181(HTTP)/9182(HTTPS) PROXY protocol 端口
         priority: 0
         plugins:
           real-ip:

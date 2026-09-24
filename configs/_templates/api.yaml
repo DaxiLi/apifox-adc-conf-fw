@@ -1,7 +1,8 @@
 # ============================================================
 # 站点类型模板：api（API 服务）—— 路径前缀匹配、key-auth 认证、严格限流
-# 用法：复制到 configs/sites/<site-code>/service.yaml
-#   - 替换 <...> 占位符；补全 labels（owner/contact 必填）
+# 用法：复制到 configs/sites/<zone>/<site-code>/service.yaml
+#   - 替换 <...> 占位符；补全 labels（zone/owner/contact 必填）
+#   - zone 网络区安全块（PROXY/IP 限制）按网络区复制：intranet|extranet|public.yaml
 #   - 配套：调用方 consumer 写 sites/<code>/consumers.yaml 或 global/consumers/
 #   - 字段顺序规范：name → description → labels → upstream → routes
 # ============================================================
@@ -10,6 +11,7 @@ services:
     description: <站点名> API 服务
     labels:
       site: <site-code>
+      zone: <zone>            # 网络分区：intranet/extranet/public（必填）
       site_type: api
       env: prod
       owner: <team>

@@ -4,6 +4,7 @@
 | ---- | ---- |
 | 访问域名 | `https://ss-admin.ynfwyy.com` / `http://ss-admin.ynfwyy.com` |
 | 后端 | `http://172.32.98.41:85` |
+| 网络区 | intranet（内网，`configs/sites/intranet/`） |
 | 站点类型 | partner（对外合作接口） |
 | 负责人 | 窦坤-邢玉瑞 |
 | IP 白名单 | `10.106.150.107`（ip-restriction，route 级） |
@@ -23,4 +24,6 @@
 
 | 日期 | 内容 | 原因 |
 | ---- | ---- | ---- |
+| 2026-09-21 | 重构：迁入 `configs/sites/intranet/`，service 加 `zone: intranet` 标签 | 配置按网络区分区（内网/外网/公网），内网必须 PROXY + IP 白名单；资源名不变，ID 不变 |
 | 2026-09-20 | 新增站点：service.yaml（partner 反代 + ip-restriction 白名单）+ 本 README | 第三方厂家管理后台经网关反代至 172.32.98.41:85，仅放行 10.106.150.107 |
+| 2026-09-20 | vars 修复：`server_port in [9181, 9182]` 数字列表改为字符串 `["9181", "9182"]` | `in` 是严格相等比较，数字不会等于 nginx 变量的字符串值，原写法可能永不匹配 |

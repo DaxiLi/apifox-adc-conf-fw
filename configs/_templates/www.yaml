@@ -1,7 +1,8 @@
 # ============================================================
 # 站点类型模板：www（官网）—— 全域名匹配、方法全开、可 WebSocket、基础限流
-# 用法：复制到 configs/sites/<site-code>/service.yaml
-#   - 替换 <...> 占位符；补全 labels（owner/contact 必填，人找得到负责人）
+# 用法：复制到 configs/sites/<zone>/<site-code>/service.yaml
+#   - 替换 <...> 占位符；补全 labels（zone/owner/contact 必填）
+#   - zone 网络区安全块（PROXY/IP 限制）按网络区复制：intranet|extranet|public.yaml
 #   - 字段顺序规范：name → description → labels → upstream → routes
 #   - 上线前必须 lint + diff；见 docs/AI配置编写指引.md
 # ============================================================
@@ -10,6 +11,7 @@ services:
     description: <站点中文名>官网
     labels:
       site: <site-code>
+      zone: <zone>            # 网络分区：intranet/extranet/public（必填）
       site_type: www
       env: prod
       owner: <team>
