@@ -7,6 +7,7 @@
 # 访问域名：www-oms-ejinshui--cloud-com.ynfwyy.com（对应 *.ynfwyy.com 通配证书，无需单独 ssl.yaml）
 # 说明：外网不走 PROXY protocol，请求直达 APISIX 标准 HTTP/HTTPS 监听口 80/443；
 #       IP 白名单 172.32.5.23（HRP 侧出口 IP，外网直连 remote_addr 即客户端 IP）。
+# 转发限制：仅代理 /fp/statics/（前端静态资源）与 /prod-api/（后端接口），其余路径一律不转发。
 # ============================================================
 services:
   - name: oms-ejinshui-cloud-partner
@@ -27,9 +28,10 @@ services:
           port: 443
           weight: 100
     routes:
-      - name: oms-ejinshui-cloud-root
+      - name: oms-ejinshui-cloud-fp-api
         uris:
-          - /*
+          - /fp/statics/*     # 前端静态资源（仅此前缀转发）
+          - /prod-api/*       # 后端接口（仅此前缀转发）
         hosts:
           - www-oms-ejinshui--cloud-com.ynfwyy.com
         methods: [GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS]

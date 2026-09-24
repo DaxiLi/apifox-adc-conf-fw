@@ -1,7 +1,7 @@
 # 配置总览（自动生成，请勿手改）
 
 > 由 `tools/gen-inventory.py` 生成｜重新生成：`python tools/gen-inventory.py [--html] [--live]`
-> 生成时间：2026-09-24 08:08
+> 生成时间：2026-09-24 08:56
 
 ## 一、总览
 
@@ -42,10 +42,10 @@ scheme: https
 type: roundrobin
 ```
 
-**route：`oms-ejinshui-cloud-root`**
+**route：`oms-ejinshui-cloud-fp-api`**
 
 - hosts：www-oms-ejinshui--cloud-com.ynfwyy.com
-- uris：/*
+- uris：/fp/statics/*, /prod-api/*
 - methods：GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS
 - vars：server_port in [80,443]
 - priority：0

@@ -9,6 +9,7 @@
 | 负责人 | 陈曦 |
 | 用途 | HRP 系统从数电发票管理系统下载电子发票 |
 | IP 白名单 | `172.32.5.23`（ip-restriction，其余来源 403） |
+| 转发路径 | 仅 `/fp/statics/*`（前端静态资源）、`/prod-api/*`（后端接口），其余路径不转发 |
 | 匹配规则 | route vars：`server_port in ["80", "443"]`（APISIX 标准 HTTP/HTTPS 监听口） |
 
 ## 说明
@@ -20,6 +21,8 @@
 - `pass_host: node`：Host 透传为 `www.oms.ejinshui-cloud.com`——后端为公网虚拟主机站点，
   必须按自身域名匹配 vhost，否则返回默认站点/404。
 - IP 白名单仅放行 `172.32.5.23`：外网直连（无 PROXY），ip-restriction 按 `remote_addr`（客户端 IP）判定。
+- **转发路径限制**：route `uris` 仅匹配 `/fp/statics/*` 与 `/prod-api/*`（前缀匹配，`*` 结尾）；
+  其余路径（如 `/`、`/login` 等）一律 404，不转发到后端。
 - 证书：Let's Encrypt `*.ynfwyy.com` 通配（`configs/global/ssls/wildcard.yaml`，
   `snis: ["*.ynfwyy.com"]`）覆盖本访问域名 TLS，本站点无需单独 ssl.yaml。
 
@@ -28,3 +31,4 @@
 | 日期 | 内容 | 原因 |
 | ---- | ---- | ---- |
 | 2026-09-24 | 新增站点：service.yaml（https 反代 + 80/443 匹配 + IP 白名单 172.32.5.23）+ 本 README | HRP 需经外网反代访问数电发票管理系统下载电子发票 |
+| 2026-09-24 | 转发限制：route uris 从 `/*` 收窄为 `/fp/statics/*` + `/prod-api/*`，路由名定为 `oms-ejinshui-cloud-fp-api` | 仅转发前端静态资源与后端接口，减少暴露面 |
