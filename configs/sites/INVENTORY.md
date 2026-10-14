@@ -1,25 +1,23 @@
 # 配置总览（自动生成，请勿手改）
 
 > 由 `tools/gen-inventory.py` 生成｜重新生成：`python tools/gen-inventory.py [--html] [--live]`
-> 生成时间：2026-09-24 08:56
+> 生成时间：2026-10-14 15:05
 
 ## 一、总览
 
-- 站点：**6** 个（内网 4 ｜ 外网 2 ｜ 公网 0）
-- service：**6** 个，route **6** 条
-- 站点类型分布：partner 3, ws 1, www 2
-- 认证使用：key-auth 1
-- 消费者：站点级 1 个 / 全局 0 个
+- 站点：**4** 个（内网 3 ｜ 外网 1 ｜ 公网 0）
+- service：**4** 个，route **4** 条
+- 站点类型分布：partner 3, ws 1
+- 认证使用：无
+- 消费者：站点级 0 个 / 全局 0 个
 - 证书：站点级 0 张 / 全局 1 张
 
 | 网络区 | 站点 | service | 域名(hosts) | 后端 | 类型 | 认证 | IP 白名单 | 端口匹配 | WS | 负责人 |
 | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
 | 外网 | oms-ejinshui-cloud | oms-ejinshui-cloud-partner | www-oms-ejinshui--cloud-com.ynfwyy.com | https://www.oms.ejinshui-cloud.com:443 | partner | — | 白名单(1): 172.32.5.23 | server_port in [80,443] | — | 陈曦 |
-| 外网 | ynfwyy | ynfwyy-www | www.ynfwyy.com | http://172.32.100.11:80 | www | key-auth(header=token) | — | server_port in [80,443] | — | test |
 | 内网 | rtasr-xfyun-cn.ynfwyy.com | rtasr-xfyun-cn.ynfwyy.com-ws | rtasr-xfyun-cn.ynfwyy.com | https://rtasr.xfyun.cn:443 | ws | — | 白名单(30): 10.105.202.101, 10.106.11.69, 10.106.150.101 … | server_port in [9181,9182] | 是 | 邓儇 |
 | 内网 | ss-admin.ynfwyy.com | ss-admin.ynfwyy.com-partner | ss-admin.ynfwyy.com | http://172.32.98.41:85 | partner | — | 白名单(1): 10.106.150.107 | server_port in [9181,9182] | — | 窦坤-邢玉瑞 |
 | 内网 | ss-dz.ynfwyy.com | ss-dz.ynfwyy.com-partner | ss-dz.ynfwyy.com | http://172.32.98.41:83 | partner | — | 白名单(1): 10.106.150.107 | server_port in [9181,9182] | — | 窦坤-邢玉瑞 |
-| 内网 | testport | testport-www | — | http://172.32.100.11:80 | www | — | — | proxy_protocol_server_port == 10001 | — | test |
 
 ## 二、站点明细（完整配置）
 
@@ -56,45 +54,6 @@ type: roundrobin
     whitelist:
     - 172.32.5.23
 ```
-
-### [外网] ynfwyy  `sites/extranet/ynfwyy/`
-
-#### service：`ynfwyy-www`
-
-- 描述：外网 www.ynfwyy.com 反代（key-auth）
-- labels：site=ynfwyy, zone=extranet, site_type=www, env=prod, owner=test, contact=test
-
-**upstream**：
-
-```yaml
-nodes:
-- host: 172.32.100.11
-  port: 80
-  weight: 100
-pass_host: pass
-scheme: http
-type: roundrobin
-```
-
-**route：`ynfwyy-www-root`**
-
-- hosts：www.ynfwyy.com
-- uris：/*
-- methods：GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS
-- vars：server_port in [80,443]
-- priority：0
-- plugins：
-
-```yaml
-  key-auth:
-    header: token
-```
-
-**consumers**：
-- `ynfwyy-www` —— 凭证：key-auth:primary-key
-  ```yaml
-    key: aaaabbbb
-  ```
 
 ### [内网] rtasr-xfyun-cn.ynfwyy.com  `sites/intranet/rtasr-xfyun-cn.ynfwyy.com/`
 
@@ -242,33 +201,6 @@ type: roundrobin
     trusted_addresses:
     - 172.32.9.2
 ```
-
-### [内网] testport  `sites/intranet/testport/`
-
-#### service：`testport-www`
-
-- 描述：示例站点：按 PROXY protocol 目标端口 10001 匹配
-- labels：site=testport, zone=intranet, site_type=www, env=prod, owner=test, contact=test；x-check-skip=intranet-ip,intranet-realip
-
-**upstream**：
-
-```yaml
-nodes:
-- host: 172.32.100.11
-  port: 80
-  weight: 100
-pass_host: pass
-scheme: http
-type: roundrobin
-```
-
-**route：`testport-www-root`**
-
-- hosts：—
-- uris：/*
-- methods：GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS
-- vars：proxy_protocol_server_port == 10001
-- priority：0
 
 ## 三、全局资源
 

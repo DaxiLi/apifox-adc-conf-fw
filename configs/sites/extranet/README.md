@@ -23,5 +23,4 @@
 
 ## 当前站点
 
-- `ynfwyy/` — www.ynfwyy.com 外网站点（key-auth 认证反代）
 - `oms-ejinshui-cloud/` — 数电发票管理系统反代（HRP 下载电子发票；IP 白名单 172.32.5.23）

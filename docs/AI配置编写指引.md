@@ -196,7 +196,7 @@ plugins:  键按字母序
 | 反斜杠路径 | adc（node glob）把 `\` 当转义符 → 崩溃；一律正斜杠 |
 | `managed-by: adc` 标签 | sync 时 ADC 自动注入到资源上，diff/dump 里出现是**正常现象**，不要删 |
 | `-f` 单值 | 一次 `-f` 只接受一个文件/glob；多文件重复 `-f`（脚本已封装） |
-| 测试站点 | `configs/sites/intranet/testport/` 是 PROXY 目标端口匹配示例；新站点从 zone 模板建 |
+| 测试站点 | testport 示例已删除；新站点从 zone 模板建（`configs/_templates/intranet|extranet|public.yaml`） |
 | 版本 | ADC v0.30.3；`$env://`/`${ENV}`/`\${}` 分别要求 ≥ v0.12.1/v0.12.0/v0.19.1 |
 
 ---

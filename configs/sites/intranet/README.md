@@ -30,4 +30,3 @@
 - `ss-admin.ynfwyy.com/` — 第三方厂家管理后台反代
 - `ss-dz.ynfwyy.com/` — 第三方厂家服务反代
 - `rtasr-xfyun-cn.ynfwyy.com/` — 讯飞实时语音听写 WS 反代
-- `testport/` — 示例：按 PROXY 头目标端口匹配
