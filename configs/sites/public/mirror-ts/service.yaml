@@ -1,0 +1,76 @@
+# ============================================================
+# 站点：mirror-ts（清华开源镜像站反代，仅供软件源下载）
+# 网络区：public（公网）
+# 类型：static（静态资源/文件镜像）
+# 负责人：admin
+# 后端：https://mirrors.tuna.tsinghua.edu.cn:443（清华大学开源软件镜像站）
+# 访问域名：mirror-ts.ynfwyy.com（对应 *.ynfwyy.com 通配证书，无需单独 ssl.yaml）
+# 限制：仅 GET/HEAD + 仅放行下方软件源目录白名单（目录取自 tuna 实时镜像列表 2026-10；
+#       其余路径含网页界面 /、/help/、/static/、/status/ 等一律 404，即只能作软件源用）。
+# ============================================================
+services:
+  - name: mirror-ts-static
+    description: 清华开源镜像站反代（仅供软件源下载）
+    labels:
+      site: mirror-ts
+      zone: public            # 网络分区：公网
+      site_type: static
+      env: prod
+      owner: admin
+      contact: admin
+    upstream:
+      type: roundrobin
+      scheme: https
+      pass_host: node         # 后端按虚拟主机路由，需透传 Host=mirrors.tuna.tsinghua.edu.cn
+      nodes:
+        - host: mirrors.tuna.tsinghua.edu.cn
+          port: 443
+          weight: 100
+    routes:
+      - name: mirror-ts-repos
+        uris:
+          # ---- 系统发行版软件源 ----
+          - /ubuntu/*
+          - /ubuntu-releases/*
+          - /ubuntu-ports/*
+          - /ubuntu-cdimage/*
+          - /ubuntu-cloud-images/*
+          - /debian/*
+          - /debian-cd/*
+          - /debian-security/*
+          - /debian-nonfree/*
+          - /centos/*
+          - /centos-stream/*
+          - /centos-vault/*
+          - /fedora/*
+          - /alpine/*
+          - /archlinux/*
+          - /archlinuxcn/*
+          - /opensuse/*
+          - /raspbian/*
+          - /linuxmint/*
+          - /kali/*
+          - /gentoo/*
+          - /deepin/*
+          - /openeuler/*
+          - /epel/*
+          - /elrepo/*
+          # ---- 语言/包管理器 ----
+          - /pypi/*
+          - /anaconda/*
+          - /rubygems/*
+          - /rustup/*
+          - /crates.io-index/*
+          - /nodejs-release/*
+          # ---- 工具/基础设施 ----
+          - /docker-ce/*
+          - /kubernetes/*
+          - /gitlab-runner/*
+        hosts:
+          - mirror-ts.ynfwyy.com
+        methods: [GET, HEAD]    # 软件源只读下载，无需写方法
+        vars:
+          - - server_port
+            - "in"
+            - ["80", "443"]     # APISIX 标准 HTTP/HTTPS 监听口（公网不走 PROXY）
+        priority: 0

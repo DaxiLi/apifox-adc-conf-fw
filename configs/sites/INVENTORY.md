@@ -1,13 +1,13 @@
 # 配置总览（自动生成，请勿手改）
 
 > 由 `tools/gen-inventory.py` 生成｜重新生成：`python tools/gen-inventory.py [--html] [--live]`
-> 生成时间：2026-10-14 15:05
+> 生成时间：2026-10-16 10:41
 
 ## 一、总览
 
-- 站点：**4** 个（内网 3 ｜ 外网 1 ｜ 公网 0）
-- service：**4** 个，route **4** 条
-- 站点类型分布：partner 3, ws 1
+- 站点：**5** 个（内网 3 ｜ 外网 1 ｜ 公网 1）
+- service：**5** 个，route **5** 条
+- 站点类型分布：partner 3, static 1, ws 1
 - 认证使用：无
 - 消费者：站点级 0 个 / 全局 0 个
 - 证书：站点级 0 张 / 全局 1 张
@@ -18,6 +18,7 @@
 | 内网 | rtasr-xfyun-cn.ynfwyy.com | rtasr-xfyun-cn.ynfwyy.com-ws | rtasr-xfyun-cn.ynfwyy.com | https://rtasr.xfyun.cn:443 | ws | — | 白名单(30): 10.105.202.101, 10.106.11.69, 10.106.150.101 … | server_port in [9181,9182] | 是 | 邓儇 |
 | 内网 | ss-admin.ynfwyy.com | ss-admin.ynfwyy.com-partner | ss-admin.ynfwyy.com | http://172.32.98.41:85 | partner | — | 白名单(1): 10.106.150.107 | server_port in [9181,9182] | — | 窦坤-邢玉瑞 |
 | 内网 | ss-dz.ynfwyy.com | ss-dz.ynfwyy.com-partner | ss-dz.ynfwyy.com | http://172.32.98.41:83 | partner | — | 白名单(1): 10.106.150.107 | server_port in [9181,9182] | — | 窦坤-邢玉瑞 |
+| 公网 | mirror-ts | mirror-ts-static | mirror-ts.ynfwyy.com | https://mirrors.tuna.tsinghua.edu.cn:443 | static | — | — | server_port in [80,443] | — | admin |
 
 ## 二、站点明细（完整配置）
 
@@ -201,6 +202,33 @@ type: roundrobin
     trusted_addresses:
     - 172.32.9.2
 ```
+
+### [公网] mirror-ts  `sites/public/mirror-ts/`
+
+#### service：`mirror-ts-static`
+
+- 描述：清华开源镜像站反代（仅供软件源下载）
+- labels：site=mirror-ts, zone=public, site_type=static, env=prod, owner=admin, contact=admin
+
+**upstream**：
+
+```yaml
+nodes:
+- host: mirrors.tuna.tsinghua.edu.cn
+  port: 443
+  weight: 100
+pass_host: node
+scheme: https
+type: roundrobin
+```
+
+**route：`mirror-ts-repos`**
+
+- hosts：mirror-ts.ynfwyy.com
+- uris：/ubuntu/*, /ubuntu-releases/*, /ubuntu-ports/*, /ubuntu-cdimage/*, /ubuntu-cloud-images/*, /debian/*, /debian-cd/*, /debian-security/*, /debian-nonfree/*, /centos/*, /centos-stream/*, /centos-vault/*, /fedora/*, /alpine/*, /archlinux/*, /archlinuxcn/*, /opensuse/*, /raspbian/*, /linuxmint/*, /kali/*, /gentoo/*, /deepin/*, /openeuler/*, /epel/*, /elrepo/*, /pypi/*, /anaconda/*, /rubygems/*, /rustup/*, /crates.io-index/*, /nodejs-release/*, /docker-ce/*, /kubernetes/*, /gitlab-runner/*
+- methods：GET, HEAD
+- vars：server_port in [80,443]
+- priority：0
 
 ## 三、全局资源
 
