@@ -1,7 +1,7 @@
 # 配置总览（自动生成，请勿手改）
 
 > 由 `tools/gen-inventory.py` 生成｜重新生成：`python tools/gen-inventory.py [--html] [--live]`
-> 生成时间：2026-10-19 15:49
+> 生成时间：2026-10-22 15:35
 
 ## 一、总览
 
@@ -16,7 +16,7 @@
 | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
 | 外网 | oms-ejinshui-cloud | oms-ejinshui-cloud-partner | www-oms-ejinshui--cloud-com.ynfwyy.com | https://www.oms.ejinshui-cloud.com:443 | partner | — | 白名单(1): 172.32.5.23 | server_port in [18080,19443] | — | 陈曦 |
 | 外网 | sms-send | sms-send-api | sms-send.ext.ynfwyy.com | http://172.32.100.49:18888 | api | — | — | server_port in [18080,19443] | — | 袁杰 |
-| 内网 | rtasr-xfyun-cn.ynfwyy.com | rtasr-xfyun-cn.ynfwyy.com-ws | rtasr-xfyun-cn.ynfwyy.com | https://rtasr.xfyun.cn:443 | ws | — | 白名单(30): 10.105.202.101, 10.106.11.69, 10.106.150.101 … | server_port in [9181,9182] | 是 | 邓儇 |
+| 内网 | rtasr-xfyun-cn.ynfwyy.com | rtasr-xfyun-cn.ynfwyy.com-ws | rtasr-xfyun-cn.ynfwyy.com | https://rtasr.xfyun.cn:443 | ws | — | 白名单(31): 10.105.202.101, 10.106.11.69, 10.106.150.101 … | server_port in [9181,9182] | 是 | 邓儇 |
 | 内网 | ss-admin.ynfwyy.com | ss-admin.ynfwyy.com-partner | ss-admin.ynfwyy.com | http://172.32.98.41:85 | partner | — | 白名单(1): 10.106.150.107 | server_port in [9181,9182] | — | 窦坤-邢玉瑞 |
 | 内网 | ss-dz.ynfwyy.com | ss-dz.ynfwyy.com-partner | ss-dz.ynfwyy.com | http://172.32.98.41:83 | partner | — | 白名单(1): 10.106.150.107 | server_port in [9181,9182] | — | 窦坤-邢玉瑞 |
 | 公网 | mirror-ts | mirror-ts-static | mirror-ts.ynfwyy.com | https://mirrors.tuna.tsinghua.edu.cn:443 | static | — | — | server_port in [80,443] | — | admin |
@@ -98,7 +98,7 @@ nodes:
 - host: rtasr.xfyun.cn
   port: 443
   weight: 100
-pass_host: pass
+pass_host: node
 scheme: https
 timeout:
   connect: 10
@@ -123,6 +123,7 @@ type: roundrobin
     - 10.106.11.69
     - 10.106.150.101
     - 10.106.150.108
+    - 10.106.150.107
     - 10.107.102.31
     - 10.107.102.38
     - 10.107.102.39
@@ -149,6 +150,12 @@ type: roundrobin
     - 10.107.102.216
     - 10.107.102.217
     - 10.107.102.250
+  proxy-rewrite:
+    headers:
+      remove:
+      - X-Forwarded-For
+      - X-Real-IP
+      - Forwarded
   real-ip:
     source: proxy_protocol_addr
     trusted_addresses:

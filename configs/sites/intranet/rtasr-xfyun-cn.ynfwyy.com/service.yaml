@@ -21,7 +21,7 @@ services:
     upstream:
       type: roundrobin
       scheme: https
-      pass_host: pass
+      pass_host: node          # 上游 Host 用节点域名 rtasr.xfyun.cn；透传代理域名（pass）会让讯飞按 Host 识别回 404
       nodes:
         - host: rtasr.xfyun.cn
           port: 443
@@ -44,6 +44,12 @@ services:
             - ["9181", "9182"]
         priority: 0
         plugins:
+          proxy-rewrite:
+            headers:
+              remove:        # 剥离客户端 IP 头，避免内网真实 IP 透传给讯飞（APISIX 默认会把连接方 IP 追加进 X-Forwarded-For）
+                - X-Forwarded-For
+                - X-Real-IP
+                - Forwarded
           real-ip:
             source: proxy_protocol_addr  # 指定从 PROXY protocol 地址变量获取真实 IP
             trusted_addresses:

@@ -23,7 +23,10 @@ HAProxy 后端指向该端口（已确认）。
 ## 说明
 
 - 客户端查询串（`?appid=...` 等）由 APISIX 原样透传给后端，无需改写。
-- `pass_host: pass`：上游 Host 头保留客户端的 `rtasr-xfyun-cn.ynfwyy.com`。
+- `pass_host: node`：上游 Host 头用节点域名 `rtasr.xfyun.cn`，**不透传代理域名**。
+  曾用 `pass` 导致客户端 Host（`rtasr-xfyun-cn.ynfwyy.com`）被原样发往讯飞，讯飞按 Host 识别返回 404。
+- `proxy-rewrite`：剥离 `X-Forwarded-For` / `X-Real-IP` / `Forwarded`，客户端内网 IP 不透传给讯飞
+  （APISIX 默认会把连接方 IP 追加进 X-Forwarded-For）。
 - 证书：Let's Encrypt `*.ynfwyy.com` 通配（已在 `configs/global/ssls/wildcard.yaml`
   声明一次，`snis: ["*.ynfwyy.com"]`，本站 TLS 由通配 SNI 覆盖；轮换时保持 `snis`
   不变，见 `docs/证书轮换操作手册.md`）。
@@ -32,6 +35,7 @@ HAProxy 后端指向该端口（已确认）。
 
 | 日期 | 内容 | 原因 |
 | ---- | ---- | ---- |
+| 2026-10-22 | 修复 404：upstream `pass_host: pass` → `node`；新增 `proxy-rewrite` 剥离客户端 IP 头 | 客户端 Host（`rtasr-xfyun-cn.ynfwyy.com`）被原样透传给讯飞，讯飞按 Host 识别返回 404；同时 APISIX 默认把连接方 IP 追加进 X-Forwarded-For，一并剥离，避免内网信息外泄 |
 | 2026-09-21 | 重构：迁入 `configs/sites/intranet/`，service 加 `zone: intranet` 标签 | 配置按网络区分区（内网/外网/公网），内网必须 PROXY + IP 白名单；资源名不变，ID 不变 |
 | 2026-09-17 | 新增站点：service.yaml（ws 反代 + ip-restriction 白名单）+ ssl.yaml（内联通配证书）+ 本 README | 对外提供讯飞实时听写反代入口；证书文件 cert.pem/key.pem 内联后已删除 |
 | 2026-09-17 | 说明更新：确认 HAProxy PROXY protocol + APISIX proxy_protocol 端口均已配置 | 明确真实 IP 链路已就绪，白名单按真实客户端 IP 匹配 |
