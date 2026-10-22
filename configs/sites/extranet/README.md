@@ -5,21 +5,22 @@
 ## 规则
 
 1. `labels.zone` 必须为 `extranet`，且站点目录必须在本目录下（zone 与目录一致，禁止混放）。
-2. **不走 PROXY protocol**（只有内网才走 PP，端口 9181/9182）：外网请求直达 APISIX 标准
-   HTTP/HTTPS 监听口 **80/443**，路由用 `vars: server_port in ["80", "443"]` 匹配。
+2. **不走 PROXY protocol**（只有内网才走 PP，端口 9181/9182）：外网请求直达 APISIX 外网专属
+   HTTP/HTTPS 监听口 **18080/19443**（前置 LB 为 DNAT，保留客户端源 IP），路由用
+   `vars: server_port in ["18080", "19443"]` 匹配。
 3. **IP 限制非必须**（可选；内网 zone 才强制）。
 4. 新站起点：复制 `configs/_templates/extranet.yaml`。
 
-## 端口约定（外网/公网共用 80/443，不走 PP）
+## 端口约定（外网专属 18080/19443，不走 PP）
 
 | 端口 | 用途 |
 | ---- | ---- |
-| 80 | HTTP（APISIX 标准监听口，不走 PROXY protocol） |
-| 443 | HTTPS（APISIX 标准监听口，不走 PROXY protocol） |
+| 18080 | HTTP（APISIX 外网专属监听口，不走 PROXY protocol） |
+| 19443 | HTTPS（APISIX 外网专属监听口，不走 PROXY protocol） |
 
-> 外网与公网共用 80/443，靠 `hosts` 区分路由；内网走 PP 的 9181/9182 入口请求不满足
-> 本区路由的 `server_port` 条件，不会命中（端口隔离）。前提：网关 `config.yaml` 的
-> `node_listen` 需监听 80/443。
+> 外网端口与内网（9181/9182）、公网/互联网（80/443）互不重叠，路由只匹配本区端口 →
+> 任一区入口请求不会命中外网路由（端口隔离）。前提：网关 `config.yaml` 的 `node_listen`
+> 监听 18080、`ssl.listen` 监听 19443。
 
 ## 当前站点
 

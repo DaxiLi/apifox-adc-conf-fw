@@ -1,7 +1,7 @@
 # 配置总览（自动生成，请勿手改）
 
 > 由 `tools/gen-inventory.py` 生成｜重新生成：`python tools/gen-inventory.py [--html] [--live]`
-> 生成时间：2026-10-16 15:20
+> 生成时间：2026-10-19 15:49
 
 ## 一、总览
 
@@ -10,12 +10,12 @@
 - 站点类型分布：api 1, partner 3, static 1, ws 1
 - 认证使用：无
 - 消费者：站点级 0 个 / 全局 0 个
-- 证书：站点级 0 张 / 全局 1 张
+- 证书：站点级 0 张 / 全局 2 张
 
 | 网络区 | 站点 | service | 域名(hosts) | 后端 | 类型 | 认证 | IP 白名单 | 端口匹配 | WS | 负责人 |
 | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
-| 外网 | oms-ejinshui-cloud | oms-ejinshui-cloud-partner | www-oms-ejinshui--cloud-com.ynfwyy.com | https://www.oms.ejinshui-cloud.com:443 | partner | — | 白名单(1): 172.32.5.23 | server_port in [80,443] | — | 陈曦 |
-| 外网 | sms-send | sms-send-api | sms-send.ynfwyy.com | http://172.32.100.49:18888 | api | — | — | server_port in [80,443] | — | 袁杰 |
+| 外网 | oms-ejinshui-cloud | oms-ejinshui-cloud-partner | www-oms-ejinshui--cloud-com.ynfwyy.com | https://www.oms.ejinshui-cloud.com:443 | partner | — | 白名单(1): 172.32.5.23 | server_port in [18080,19443] | — | 陈曦 |
+| 外网 | sms-send | sms-send-api | sms-send.ext.ynfwyy.com | http://172.32.100.49:18888 | api | — | — | server_port in [18080,19443] | — | 袁杰 |
 | 内网 | rtasr-xfyun-cn.ynfwyy.com | rtasr-xfyun-cn.ynfwyy.com-ws | rtasr-xfyun-cn.ynfwyy.com | https://rtasr.xfyun.cn:443 | ws | — | 白名单(30): 10.105.202.101, 10.106.11.69, 10.106.150.101 … | server_port in [9181,9182] | 是 | 邓儇 |
 | 内网 | ss-admin.ynfwyy.com | ss-admin.ynfwyy.com-partner | ss-admin.ynfwyy.com | http://172.32.98.41:85 | partner | — | 白名单(1): 10.106.150.107 | server_port in [9181,9182] | — | 窦坤-邢玉瑞 |
 | 内网 | ss-dz.ynfwyy.com | ss-dz.ynfwyy.com-partner | ss-dz.ynfwyy.com | http://172.32.98.41:83 | partner | — | 白名单(1): 10.106.150.107 | server_port in [9181,9182] | — | 窦坤-邢玉瑞 |
@@ -47,7 +47,7 @@ type: roundrobin
 - hosts：www-oms-ejinshui--cloud-com.ynfwyy.com
 - uris：/fp/statics/*, /prod-api/*
 - methods：GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS
-- vars：server_port in [80,443]
+- vars：server_port in [18080,19443]
 - priority：0
 - plugins：
 
@@ -78,10 +78,10 @@ type: roundrobin
 
 **route：`sms-send-root`**
 
-- hosts：sms-send.ynfwyy.com
+- hosts：sms-send.ext.ynfwyy.com
 - uris：/*
 - methods：GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS
-- vars：server_port in [80,443]
+- vars：server_port in [18080,19443]
 - priority：0
 
 ### [内网] rtasr-xfyun-cn.ynfwyy.com  `sites/intranet/rtasr-xfyun-cn.ynfwyy.com/`
@@ -274,6 +274,12 @@ response-rewrite:
 无。
 
 ### 全局证书
+- snis：*.ext.ynfwyy.com（labels：contact: 袁杰
+env: prod
+owner: 袁杰
+site: ynfwyy
+site_type: www
+zone: extranet）
 - snis：*.ynfwyy.com（labels：contact: 袁杰
 env: prod
 owner: 袁杰
@@ -286,7 +292,7 @@ zone: shared）
 | 网络区 | PROXY protocol | IP 限制 | 端口 |
 | ---- | ---- | ---- | ---- |
 | 内网 intranet | 必走（PP） | 必填白名单 | 9181/9182 |
-| 外网 extranet | 不走 | 可选 | 80/443 |
+| 外网 extranet | 不走 | 可选 | 18080/19443 |
 | 公网 public | 不走 | 不要求 | 80/443 |
 
 模板：admin.yaml, api.yaml, extranet.yaml, intranet.yaml, public.yaml, ssl.yaml, static.yaml, websocket.yaml, www.yaml

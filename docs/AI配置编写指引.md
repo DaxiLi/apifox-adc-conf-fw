@@ -86,9 +86,11 @@ labels:
 
 > **网络分区（zone）决定安全姿态**：内网（`intranet/`）必须走 PROXY protocol（PP）
 > （`vars: server_port in ["9181","9182"]` + `real-ip` 插件）且必须带 `ip-restriction`
-> 白名单；外网/公网**不走 PP**（`vars: server_port in ["80","443"]`，请求直达标准监听口），
-> IP 限制可选/不要求。内网（9181/9182）与外网/公网（80/443）端口互不重叠 →
-> 内网请求命中不了外网/公网路由。模板：`_templates/intranet|extranet|public.yaml`；
+> 白名单；外网**不走 PP**（`vars: server_port in ["18080","19443"]`，外网专属监听口，
+> 前置 LB 为 DNAT 保留源 IP），IP 限制可选；公网/互联网**不走 PP**
+> （`vars: server_port in ["80","443"]`，标准监听口），不要求 IP 限制。
+> 内网（9181/9182）、外网（18080/19443）、公网（80/443）三区端口互不重叠 →
+> 任一区请求命中不了其他区路由。模板：`_templates/intranet|extranet|public.yaml`；
 > 详见 `docs/配置仓库结构设计.md` §4.3。
 
 ### 4.4 ADC 特有字段差异（易错）
@@ -208,6 +210,7 @@ plugins:  键按字母序
 - [ ] `nodes` 是数组格式；用 `description` 不用 `desc`
 - [ ] labels 五个（site/zone/site_type/env/owner）齐全，且 `zone` 与目录一致
 - [ ] 内网路由：`server_port in ["9181","9182"]` + `real-ip` + `ip-restriction` 白名单（不允许留空）
+- [ ] 外网路由：`server_port in ["18080","19443"]`；公网/互联网路由：`server_port in ["80","443"]`（三区端口不得混用）
 - [ ] 命名规范（service/route/consumer 唯一性）符合
 - [ ] 未改资源名 / 未动 snis（除非任务是改名/加域名）
 - [ ] 模板目录 `_templates/` 未被修改

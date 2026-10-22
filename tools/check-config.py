@@ -40,7 +40,8 @@ VALID_ENVS = {"prod", "staging", "dev"}
 REQUIRED_LABELS = ("site", "zone", "site_type", "env", "owner")
 
 INTRANET_PP_PORTS = {"9181", "9182"}   # 内网 PP 端口（HTTP/HTTPS + PROXY protocol）
-NORMAL_PORTS = {"80", "443"}           # 外网/公网标准监听口（不走 PP）
+EXTRANET_PORTS = {"18080", "19443"}    # 外网专属监听口（HTTP/HTTPS，不走 PP；前置 LB 为 DNAT 保留源 IP）
+PUBLIC_PORTS = {"80", "443"}           # 互联网/公网专属标准监听口（不走 PP）
 
 SKIP_LABEL = "x-check-skip"            # 资源级豁免标签：值 = 逗号分隔的 rule_id 列表，或 "all"
 PLACEHOLDER_RE = re.compile(r"<\s*[a-zA-Z][a-zA-Z0-9_.\-/]*\s*>")
@@ -302,13 +303,23 @@ def check_zone_rules(res, rep: Reporter):
             if mode == "server_port" and ports and not (ports & INTRANET_PP_PORTS):
                 rep.warn("w4", r.path, f"内网 route {r.name!r} 的 server_port={sorted(ports)} 不在约定内网 PP 端口 9181/9182")
         else:  # extranet / public
-            # E8：禁止引用内网 PP 端口（内网/外网隔离）
+            # E8：禁止引用内网 PP 端口（内网/外网/公网隔离）
             if ports & INTRANET_PP_PORTS:
                 rep.error("e8", r.path, f"外网/公网 route {r.name!r} 的端口匹配包含内网 PP 端口 {sorted(ports & INTRANET_PP_PORTS)}——"
                                         f"内网/外网配置禁止混用")
-            # W4：外网/公网约定标准端口 80/443
-            if mode == "server_port" and ports and ports != NORMAL_PORTS:
-                rep.warn("w4", r.path, f"外网/公网 route {r.name!r} 的 server_port={sorted(ports)} 与约定 80/443 不一致")
+            # E13：三区端口不得混用（外网=18080/19443，公网/互联网=80/443）
+            if ports:
+                other_zone_ports = PUBLIC_PORTS if zone == "extranet" else EXTRANET_PORTS
+                hit = ports & other_zone_ports
+                if hit:
+                    rep.error("e13", r.path, f"{'外网' if zone == 'extranet' else '公网'} route {r.name!r} 的端口匹配包含"
+                                             f"{'公网' if zone == 'extranet' else '外网'}专属端口 {sorted(hit)}——"
+                                             f"三区端口不得混用（外网=18080/19443，公网=80/443）")
+            # W4：端口与所在网络区约定不符
+            expected = EXTRANET_PORTS if zone == "extranet" else PUBLIC_PORTS
+            if mode == "server_port" and ports and ports != expected:
+                rep.warn("w4", r.path, f"{'外网' if zone == 'extranet' else '公网'} route {r.name!r} 的 server_port="
+                                       f"{sorted(ports)} 与约定 {sorted(expected)} 不一致")
             # W3：外网/公网不该有 real-ip（不走 PP）
             if plugins.get("real-ip"):
                 rep.warn("w3", r.path, f"外网/公网 route {r.name!r} 带 real-ip 插件——外网/公网不走 PP，"

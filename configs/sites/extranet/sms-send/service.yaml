@@ -4,8 +4,8 @@
 # 类型：api（对外接口）
 # 负责人：袁杰
 # 后端：http://172.32.100.49:18888（短信发送服务）
-# 访问域名：sms-send.ynfwyy.com（对应 *.ynfwyy.com 通配证书，无需单独 ssl.yaml）
-# 说明：外网不走 PROXY protocol，请求直达 APISIX 标准 HTTP/HTTPS 监听口 80/443；
+# 访问域名：sms-send.ext.ynfwyy.com（对应 *.ext.ynfwyy.com 通配证书，见 global/ssls/wildcard-ext.yaml）
+# 说明：外网不走 PROXY protocol，请求直达 APISIX 外网专属监听口 18080(HTTP)/19443(HTTPS)；
 #       公开访问、不限制 IP（无 ip-restriction）。
 # ============================================================
 services:
@@ -31,10 +31,10 @@ services:
         uris:
           - /*
         hosts:
-          - sms-send.ynfwyy.com
+          - sms-send.ext.ynfwyy.com
         methods: [GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS]
         vars:
           - - server_port
             - "in"
-            - ["80", "443"]     # APISIX 标准 HTTP/HTTPS 监听口（外网不走 PROXY；内网 9181/9182 入口不会命中）
+            - ["18080", "19443"]   # APISIX 外网专属监听口（HTTP/HTTPS，不走 PROXY；前置 DNAT 保留源 IP；内网 9181/9182 入口不会命中）
         priority: 0

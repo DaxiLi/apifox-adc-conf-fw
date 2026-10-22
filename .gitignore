@@ -15,6 +15,7 @@ Desktop.ini
 *.swp
 *.swo
 *~
+.tmp/
 
 # Generated ADC diff output
 diff.yaml
@@ -22,6 +23,9 @@ diff.yaml
 # Generated inventory artifacts (searchable dashboard / live dump temp)
 configs/sites/INVENTORY.html
 .inventory-live.yaml
+
+# Gateway full-state dump (adc dump 产物，勿入库)
+adc.yaml
 
 # Gateway baseline backups (may contain consumer credentials)
 backups/

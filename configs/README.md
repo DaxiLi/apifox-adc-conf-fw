@@ -32,8 +32,8 @@ configs/
 ```
 
 > **网络分区**：目录第一层即网络区（intranet/extranet/public），与资源 `labels.zone` 必须一致；
-> 内网路由限 `server_port` 9181/9182（PROXY），各区端口互不重叠 → 内网请求无法命中
-> 外网/公网路由。详见 `docs/配置仓库结构设计.md` §4.3。
+> 内网路由限 `server_port` 9181/9182（PROXY），外网限 18080/19443、公网限 80/443，
+> 三区端口互不重叠 → 任一区请求无法命中其他区路由。详见 `docs/配置仓库结构设计.md` §4.3。
 
 ## 新增一个站点（标准流程）
 
@@ -80,12 +80,12 @@ labels:
 | zone | 目录 | PROXY protocol | IP 限制 | 端口 |
 | ---- | ---- | ---- | ---- | ---- |
 | `intranet` | `sites/intranet/` | **必开（PP）** | **必填（白名单）** | 9181/9182（仅内网走 PP） |
-| `extranet` | `sites/extranet/` | **不走** | 可选 | 80/443（APISIX 标准监听口） |
-| `public` | `sites/public/` | **不走** | 不要求 | 80/443（与外网共用，以 hosts 区分） |
+| `extranet` | `sites/extranet/` | **不走** | 可选 | 18080/19443（外网专属监听口） |
+| `public` | `sites/public/` | **不走** | 不要求 | 80/443（互联网/公网专属标准监听口） |
 
 - 内网路由必须：`vars: server_port in ["9181","9182"]` + `real-ip`（PROXY 取真实 IP）+ `ip-restriction` 白名单。
-- 外网/公网路由：`vars: server_port in ["80","443"]`（不走 PROXY，请求直达标准监听口）。
-- **隔离**：内网（9181/9182）与外网/公网（80/443）端口互不重叠，路由只匹配本区端口 → 内网入口请求永远命中不了外网/公网路由。
+- 外网路由：`vars: server_port in ["18080","19443"]`；公网/互联网路由：`vars: server_port in ["80","443"]`（均不走 PROXY）。
+- **隔离**：内网（9181/9182）、外网（18080/19443）、公网（80/443）三区端口互不重叠，路由只匹配本区端口 → 任一区入口请求永远命中不了其他区路由。
 - 新站起点：复制对应 zone 模板（`_templates/intranet|extranet|public.yaml`）。
 
 ## 质量工具（tools/）

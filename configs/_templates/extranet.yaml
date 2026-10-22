@@ -3,8 +3,9 @@
 # 规则：labels.zone 必须为 extranet，站点文件放 configs/sites/extranet/；
 #       不走 PROXY protocol（只有内网才走 PP，端口 9181/9182）；
 #       IP 限制【非必须】（可选；内网 zone 才强制）。
-# 端口：APISIX 标准 HTTP/HTTPS 监听口 80(HTTP)/443(HTTPS)，请求直达、不走 PROXY；
-#       路由用 vars: server_port in ["80","443"] 匹配，内网 9181/9182 入口不会命中（区隔离）。
+# 端口：APISIX 外网专属监听口 18080(HTTP)/19443(HTTPS)，请求直达、不走 PROXY
+#       （前置 LB 为 DNAT，保留客户端源 IP）；
+#       路由用 vars: server_port in ["18080","19443"] 匹配，内网 9181/9182 与公网 80/443 入口不会命中（区隔离）。
 # 用法：复制到 configs/sites/extranet/<site-code>/service.yaml，替换 <...> 占位符。
 # 字段顺序规范：name → description → labels → upstream → routes
 # ============================================================
@@ -36,7 +37,7 @@ services:
         vars:
           - - server_port
             - "in"
-            - ["80", "443"]   # APISIX 标准 HTTP/HTTPS 监听口（外网不走 PROXY）
+            - ["18080", "19443"]   # APISIX 外网专属监听口（HTTP/HTTPS，不走 PROXY；前置 DNAT 保留源 IP）
         priority: 0
         plugins:
           # 可选：IP 限制（白名单/黑名单按需，外网不强制）
@@ -48,4 +49,4 @@ services:
             time_window: 60
             rejected_code: 429
             key_type: var
-            key: remote_addr     # 前置 LB 未开 PROXY 时 remote_addr 是 LB 出口 IP，按需调整
+            key: remote_addr     # 前置 LB 为 DNAT（保留源 IP）时 remote_addr 即客户端 IP；若 LB 会改源 IP 需先加 real-ip 再调整

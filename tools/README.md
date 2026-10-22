@@ -35,10 +35,11 @@ python tools/check-config.py --json          # JSON 输出（CI 用）
 | `e10` | ERROR | 缺必填标签（site/zone/site_type/env/owner） |
 | `e11` | ERROR | `${ENV}` 引用在本机（os.environ + .env）未定义 |
 | `e12` | ERROR | YAML 解析失败 |
+| `e13` | ERROR | 三区端口不得混用：外网仅 18080/19443、公网/互联网仅 80/443（隔离） |
 | `w1` | WARN | 缺建议标签 `contact` |
 | `w2` | WARN | site_type/env 不在约定枚举 |
 | `w3` | WARN | 内网 real-ip.source 非 proxy_protocol_addr；或外网/公网带了 real-ip（不走 PP） |
-| `w4` | WARN | 端口与所在网络区约定不符（内网 9181/9182；外网/公网 80/443） |
+| `w4` | WARN | 端口与所在网络区约定不符（内网 9181/9182；外网 18080/19443；公网/互联网 80/443） |
 | `w5` | WARN | `$env://` 为数据面变量本地无法校验；或 .env 读取失败 |
 
 ### 豁免（例外）机制

@@ -431,7 +431,7 @@ def render_markdown(data, summary, live_note=None):
     L.append("| 网络区 | PROXY protocol | IP 限制 | 端口 |")
     L.append("| ---- | ---- | ---- | ---- |")
     L.append("| 内网 intranet | 必走（PP） | 必填白名单 | 9181/9182 |")
-    L.append("| 外网 extranet | 不走 | 可选 | 80/443 |")
+    L.append("| 外网 extranet | 不走 | 可选 | 18080/19443 |")
     L.append("| 公网 public | 不走 | 不要求 | 80/443 |")
     L.append("")
     L.append(f"模板：{', '.join(data['templates']) or '—'}")
